@@ -11,7 +11,6 @@ const categories = [
 export default function Menu() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All Dishes");
-
   const filteredDishes = dishes.filter((dish) => {
     const matchesCategory =
       activeCategory === "All Dishes" || dish.category === activeCategory;
@@ -56,12 +55,12 @@ export default function Menu() {
           return (
             <button
               key={category}
+              type="button"
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-maroon text-white"
-                  : "bg-white border border-gold-light/50 text-ink hover:bg-cream-dark"
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${isActive
+                ? "bg-maroon text-white"
+                : "bg-white border border-gold-light/50 text-ink hover:bg-cream-dark"
+                }`}
             >
               {category} ({count})
             </button>

@@ -28,147 +28,151 @@ export default function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <p className="text-maroon text-xs font-semibold tracking-wide mb-2">
+      <p className="text-sm font-semibold tracking-wide mb-2 text-red-900">
         COMMUNAL FEASTING
       </p>
-      <h1 className="font-serif text-3xl sm:text-4xl text-ink mb-8">
+      <h1 className="text-3xl sm:text-4xl font-serif mb-8">
         Your Gursha Basket
       </h1>
 
       {cartItems.length === 0 ? (
-        <div className="bg-white rounded-xl p-10 text-center">
-          <p className="text-ink-muted mb-4">
+        <div className="bg-white rounded-xl p-10 text-center border">
+          <p className="text-gray-500 mb-4">
             Your basket is empty — no dishes selected yet.
           </p>
           <Link
             to="/menu"
-            className="bg-maroon text-white font-semibold px-5 py-3 rounded-lg inline-block"
+            className="bg-red-900 text-white font-semibold px-5 py-3 rounded-lg inline-block"
           >
             Browse the Menu
           </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-serif text-xl">
-                Clay Pot Stews &amp; Provisions ({cartItems.length} selections)
+          {/* Left: items */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-xl font-serif">
+                {cartItems.length} handcrafted selection
+                {cartItems.length > 1 ? "s" : ""}
               </h2>
               <button
+                type="button"
                 onClick={clearCart}
-                className="text-sm text-ink-muted underline"
+                className="text-sm text-gray-500 underline"
               >
                 Clear Table
               </button>
             </div>
 
-            <div className="space-y-4">
-              {cartItems.map((item) => {
-                const image =
-                  item.image ||
-                  categoryImages[item.category] ||
-                  defaultImage;
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-xl p-4 flex items-center gap-4"
-                  >
-                    <img
-                      src={image}
-                      alt={item.nameEn}
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <p className="font-serif font-medium">{item.nameEn}</p>
-                      <p className="text-sm text-ink-muted">
-                        ETB {item.priceETB} each
-                      </p>
-                    </div>
+            {cartItems.map((item) => {
+              const image =
+                item.image ||
+                categoryImages[item.category] ||
+                defaultImage;
 
-                    <div className="flex items-center border border-gold-light/50 rounded-lg">
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
-                        }
-                        className="px-2 py-1"
-                      >
-                        −
-                      </button>
-                      <span className="px-3">{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
-                        className="px-2 py-1"
-                      >
-                        +
-                      </button>
-                    </div>
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-xl p-4 flex items-center gap-4 border"
+                >
+                  <img
+                    src={image}
+                    alt={item.nameEn}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
 
-                    <p className="font-semibold text-maroon w-24 text-right">
-                      ETB {(item.priceETB * item.quantity).toLocaleString()}
+                  <div className="flex-1">
+                    <p className="font-semibold">{item.nameEn}</p>
+                    <p className="text-sm text-gray-500">
+                      ETB {item.priceETB} each
                     </p>
+                  </div>
 
+                  {/* Quantity */}
+                  <div className="flex items-center border rounded-lg">
                     <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="text-ink-muted hover:text-maroon text-sm"
-                      aria-label={`Remove ${item.nameEn}`}
+                      type="button"
+                      onClick={() =>
+                        updateQuantity(item.id, item.quantity - 1)
+                      }
+                      className="px-3 py-1 text-lg"
                     >
-                      🗑
+                      −
+                    </button>
+                    <span className="px-3">{item.quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateQuantity(item.id, item.quantity + 1)
+                      }
+                      className="px-3 py-1 text-lg"
+                    >
+                      +
                     </button>
                   </div>
-                );
-              })}
-            </div>
+
+                  <p className="font-semibold text-red-900 w-24 text-right">
+                    ETB {(item.priceETB * item.quantity).toLocaleString()}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-gray-400 hover:text-red-700 text-lg"
+                    aria-label={`Remove ${item.nameEn}`}
+                  >
+                    🗑
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
+          {/* Right: totals */}
+          <div className="bg-white rounded-xl p-6 h-fit sticky top-6 border">
+            <h2 className="text-xl font-serif mb-4">Basket Ledger</h2>
 
-          <div className="bg-white rounded-xl p-6 h-fit sticky top-6">
-            <h2 className="font-serif text-xl mb-4">Basket Ledger</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-ink-muted">
-                  Items Subtotal ({cartItems.length} items)
+                <span className="text-gray-500">
+                  Items Subtotal ({cartItems.length})
                 </span>
                 <span>ETB {subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-ink-muted">Delivery Fee</span>
-                <span className="text-forest font-medium">
+                <span className="text-gray-500">Delivery Fee</span>
+                <span className="text-green-700 font-medium">
                   {DELIVERY_FEE === 0 ? "FREE" : `ETB ${DELIVERY_FEE}`}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-ink-muted">City VAT &amp; Levy (15%)</span>
+                <span className="text-gray-500">VAT (15%)</span>
                 <span>ETB {tax.toLocaleString()}</span>
               </div>
             </div>
 
-            <div className="border-t border-gold-light/50 my-4"></div>
+            <div className="border-t my-4"></div>
 
             <div className="flex justify-between items-center mb-6">
-              <span className="font-semibold">
-                GRAND TOTAL
-                <span className="block text-xs text-ink-muted font-normal">
-                  Taxes included
-                </span>
-              </span>
-              <span className="font-serif text-2xl text-maroon font-semibold">
+              <span className="font-semibold">GRAND TOTAL</span>
+              <span className="text-2xl font-serif font-semibold text-red-900">
                 ETB {grandTotal.toLocaleString()}
               </span>
             </div>
 
             <Link
               to="/checkout"
-              className="block text-center bg-maroon hover:bg-maroon-dark text-white font-semibold px-5 py-3 rounded-lg transition-colors"
+              className="block text-center bg-red-900 hover:bg-red-800 text-white font-semibold px-5 py-3 rounded-lg"
             >
-              Proceed to Delivery Checkout →
+              Proceed to Checkout →
             </Link>
+
             <Link
               to="/menu"
-              className="block text-center text-sm text-ink-muted mt-4"
+              className="block text-center text-sm text-gray-500 mt-4"
             >
-               Explore more dishes from our Menu
+              ← Back to Menu
             </Link>
           </div>
         </div>

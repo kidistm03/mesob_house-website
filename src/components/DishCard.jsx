@@ -13,59 +13,66 @@ const categoryImages = {
   "Beverages & Tej":
     "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=800&q=80",
 };
+
 const defaultImage =
   "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80";
 
 export default function DishCard({ dish }) {
   const { addToCart } = useCart();
+
   const image = dish.image || categoryImages[dish.category] || defaultImage;
   const tag = dish.isSpecial ? "Chef's Special" : dish.category;
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden border border-gold-light/40 flex flex-col">
+    <div className="bg-white rounded-xl overflow-hidden border border-gray-200 flex flex-col">
+      {/* Photo */}
       <div className="relative">
         <img
           src={image}
           alt={dish.nameEn}
           className="w-full h-44 object-cover"
-          loading="lazy"
         />
-        <span className="absolute top-3 left-3 bg-maroon text-white text-xs font-semibold px-2 py-1 rounded">
+        <span className="absolute top-2 left-2 bg-red-900 text-white text-xs font-semibold px-2 py-1 rounded">
           {tag}
         </span>
         {dish.isFasting && (
-          <span className="absolute top-3 right-3 bg-forest text-white text-xs font-medium px-2 py-1 rounded">
+          <span className="absolute top-2 right-2 bg-green-800 text-white text-xs px-2 py-1 rounded">
             Fasting
           </span>
         )}
-        <span className="absolute bottom-3 right-3 bg-white/90 text-ink text-xs font-medium px-2 py-1 rounded">
+        <span className="absolute bottom-2 right-2 bg-white text-xs px-2 py-1 rounded">
           {dish.spiceLevel}
         </span>
       </div>
 
+      {/* Text */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-serif text-lg text-ink">{dish.nameEn}</h3>
+        <h3 className="text-lg font-semibold">{dish.nameEn}</h3>
         {dish.nameAm && (
-          <p className="text-xs text-ink-muted">{dish.nameAm}</p>
+          <p className="text-xs text-gray-500">{dish.nameAm}</p>
         )}
-        <p className="text-sm text-ink-muted mt-1 flex-1 line-clamp-3">
+        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
           {dish.description}
         </p>
 
-        <div className="flex items-center justify-between mt-4">
-          <span className="font-serif text-lg text-maroon font-semibold">
+        {/* PRICE + ADD BUTTON */}
+        <div className="mt-4 flex items-center justify-between gap-2">
+          <span className="text-lg font-bold text-red-900">
             ETB {dish.priceETB}
           </span>
+
           <div className="flex gap-2">
             <Link
               to={`/dish/${dish.slug}`}
-              className="text-sm font-medium text-ink hover:text-maroon px-2 py-2"
+              className="text-sm px-2 py-2 text-gray-700 hover:text-red-900"
             >
-              View Details
+              View
             </Link>
+
             <button
+              type="button"
               onClick={() => addToCart(dish, 1)}
-              className="bg-maroon hover:bg-maroon-dark text-white text-sm font-semibold px-3 py-2 rounded-lg transition-colors"
+              className="bg-red-900 hover:bg-red-800 text-white text-sm font-semibold px-3 py-2 rounded-lg"
             >
               + Add
             </button>
