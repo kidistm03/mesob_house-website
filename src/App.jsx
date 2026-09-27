@@ -12,9 +12,9 @@ import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-cream text-ink font-sans">
       <Header />
-      <main>
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
