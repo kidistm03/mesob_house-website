@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signInSchema, zodErrorsToObject } from "../schemas/authSchemas.js";
+import { useUserStore } from "../store/userStore.js";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
+    fullName: "",
     phone: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+
+  const login = useUserStore((state) => state.login);
+  const navigate = useNavigate();
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -28,11 +34,16 @@ export default function SignIn() {
       return;
     }
 
+    // log the user in with the  name
     setErrors({});
-    setSubmitted(true);
+    login({
+      name: formData.fullName,
+      phone: formData.phone,
+    });
+    navigate("/"); // go to homepage
   }
-
   return (
+
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Left: marketing copy */}
@@ -94,6 +105,23 @@ export default function SignIn() {
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div>
                 <label className="text-sm font-medium block mb-1 text-ink">
+                  Full Name <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder="e.g. Abebe Kebede"
+                  className={`w-full border rounded-lg px-3 py-2 outline-none focus:border-maroon ${errors.fullName ? "border-red-500" : "border-gold-light/50"
+                    }`}
+                />
+                {errors.fullName && (
+                  <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
+                )}
+              </div>
+              <div>
+                <label className="text-sm font-medium block mb-1 text-ink">
                   Phone Number <span className="text-red-600">*</span>
                 </label>
                 <input
@@ -102,9 +130,8 @@ export default function SignIn() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="0912345678"
-                  className={`w-full border rounded-lg px-3 py-2 outline-none focus:border-maroon ${
-                    errors.phone ? "border-red-500" : "border-gold-light/50"
-                  }`}
+                  className={`w-full border rounded-lg px-3 py-2 outline-none focus:border-maroon ${errors.phone ? "border-red-500" : "border-gold-light/50"
+                    }`}
                 />
                 {errors.phone && (
                   <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
@@ -121,9 +148,8 @@ export default function SignIn() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="At least 8 characters"
-                  className={`w-full border rounded-lg px-3 py-2 outline-none focus:border-maroon ${
-                    errors.password ? "border-red-500" : "border-gold-light/50"
-                  }`}
+                  className={`w-full border rounded-lg px-3 py-2 outline-none focus:border-maroon ${errors.password ? "border-red-500" : "border-gold-light/50"
+                    }`}
                 />
                 {errors.password && (
                   <p className="text-red-600 text-sm mt-1">{errors.password}</p>

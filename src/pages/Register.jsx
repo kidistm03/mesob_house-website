@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { registerSchema, zodErrorsToObject } from "../schemas/authSchemas.js";
+import { useUserStore } from "../store/userStore.js";
+import { useNavigate } from "react-router-dom";
 
 const diningPreferences = [
   "All Heritage Delicacies",
@@ -21,6 +23,8 @@ export default function Register() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const login = useUserStore((state) => state.login);
+  const navigate = useNavigate();
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -34,7 +38,7 @@ export default function Register() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    // 1. Validate form fields with Zod
+    // Validate form fields with Zod
     const result = registerSchema.safeParse(formData);
 
     if (!result.success) {
@@ -42,7 +46,7 @@ export default function Register() {
       return;
     }
 
-    // 2. Terms checkbox is separate (not in the schema)
+    // Terms checkbox is separate (not in the schema)
     if (!agreedToTerms) {
       setErrors((prev) => ({
         ...prev,
@@ -51,10 +55,14 @@ export default function Register() {
       return;
     }
 
-    // Validation passed
+    // Validation passed → save the user and go to home page
     setErrors({});
-    setSubmitted(true);
-    // preference is optional UI state — you can send it to an API later
+    login({
+      name: formData.fullName,
+      phone: formData.phone,
+    });
+    navigate("/"); // go to homepage
+
   }
 
   return (
@@ -111,8 +119,7 @@ export default function Register() {
 
           {submitted ? (
             <div className="bg-forest/10 border border-forest rounded-lg p-4 text-forest text-sm">
-              Welcome to Mesob House! (This is a demo — no real account was
-              created.)
+              Welcome to Mesob House!
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -152,7 +159,7 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Email (optional) */}
+              {/* Email */}
               <div>
                 <label className="text-sm font-medium block mb-1">
                   Email Address{" "}
@@ -209,7 +216,7 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Dining preference (optional — not validated by Zod) */}
+              {/* Dining preference */}
               <div>
                 <label className="text-sm font-medium block mb-2">
                   Primary Dining Preference (Optional)
@@ -220,11 +227,10 @@ export default function Register() {
                       type="button"
                       key={option}
                       onClick={() => setPreference(option)}
-                      className={`text-sm px-3 py-2 rounded-lg border ${
-                        preference === option
-                          ? "bg-maroon text-white border-maroon"
-                          : "bg-white border-gold-light/50 text-ink"
-                      }`}
+                      className={`text-sm px-3 py-2 rounded-lg border ${preference === option
+                        ? "bg-maroon text-white border-maroon"
+                        : "bg-white border-gold-light/50 text-ink"
+                        }`}
                     >
                       {option}
                     </button>

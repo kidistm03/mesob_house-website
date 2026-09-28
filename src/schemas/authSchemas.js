@@ -18,6 +18,7 @@ const optionalEmailSchema = z
   );
 
 export const signInSchema = z.object({
+  fullName: z.string().min(2, "Full name is required"),
   phone: phoneSchema,
   password: z.string().min(8, "Password must be at least 8 characters"),
 });

@@ -1,14 +1,16 @@
 import { Link, NavLink } from "react-router-dom";
 import { useCartStore } from "../store/cartStore.js";
+import { useUserStore } from "../store/userStore.js";
 
 export default function Header() {
-  
+
   const totalItems = useCartStore((state) => state.totalItems());
   const subtotal = useCartStore((state) => state.subtotal());
+  const user = useUserStore((state) => state.user);
+  const logout = useUserStore((state) => state.logout);
 
   const navLinkClasses = ({ isActive }) =>
-    `px-3 py-2 rounded-md text-sm font-medium ${
-      isActive ? "bg-red-900 text-white" : "text-gray-800 hover:bg-gray-100"
+    `px-3 py-2 rounded-md text-sm font-medium ${isActive ? "bg-red-900 text-white" : "text-gray-800 hover:bg-gray-100"
     }`;
 
   return (
@@ -48,15 +50,32 @@ export default function Header() {
             </span>
           </Link>
 
-          <Link to="/sign-in" className="text-sm font-medium hover:underline">
-            Sign In
-          </Link>
-          <Link
-            to="/register"
-            className="bg-gray-100 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-200"
-          >
-            Register
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-maroon">
+                Hello, {user.name}
+              </span>
+              <button
+                onClick={logout}
+                className="text-sm font-medium text-gray-600 hover:underline"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            // show Sign In + Register
+            <>
+              <Link to="/sign-in" className="text-sm font-medium hover:underline">
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="bg-gray-100 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-200"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
