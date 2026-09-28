@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCartStore } from "../store/cartStore.js";
+import { useCart } from "../context/CartContext.jsx";
+import { checkoutSchema, zodErrorsToObject } from "../schemas/authSchemas.js";
 
 const paymentOptions = [
   {
@@ -21,10 +22,7 @@ const paymentOptions = [
 ];
 
 export default function Checkout() {
-  const cartItems = useCartStore((state) => state.cartItems);
-  const subtotal = useCartStore((state) => state.subtotal());
-  const clearCart =useCartStore((state) => state.clearCart);
-  
+  const { cartItems, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -35,6 +33,7 @@ export default function Checkout() {
     address: "",
   });
   const [selectedPayment, setSelectedPayment] = useState("telebirr");
+  const [errors, setErrors] = useState({});
   const [orderPlaced, setOrderPlaced] = useState(false);
 
   const tax = Math.round(subtotal * 0.15);
@@ -43,10 +42,25 @@ export default function Checkout() {
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear that field's error while the user is typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    // Validate with Zod before placing the order
+    const result = checkoutSchema.safeParse(formData);
+
+    if (!result.success) {
+      setErrors(zodErrorsToObject(result.error));
+      return; // stop — do not clear cart or navigate
+    }
+
+    // Validation passed
+    setErrors({});
     setOrderPlaced(true);
     clearCart();
     setTimeout(() => navigate("/"), 2500);
@@ -59,8 +73,8 @@ export default function Checkout() {
         <p className="text-5xl mb-4">✅</p>
         <h1 className="text-3xl font-serif mb-2">Order Confirmed!</h1>
         <p className="text-gray-600">
-          Thank you — your Mesob feast is being prepared.
-          Redirecting you home...
+          Thank you — your Mesob feast is being prepared. Redirecting you
+          home...
         </p>
       </div>
     );
@@ -91,6 +105,7 @@ export default function Checkout() {
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        noValidate
       >
         {/* Left: form */}
         <div className="lg:col-span-2 space-y-6">
@@ -103,27 +118,34 @@ export default function Checkout() {
                   Full Name
                 </label>
                 <input
-                  required
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:border-red-900"
                 />
+                {errors.fullName && (
+                  <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium block mb-1">Phone</label>
                 <input
-                  required
                   name="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+251 ..."
+                  placeholder="0912345678 or +251912345678"
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:border-red-900"
                 />
+                {errors.phone && (
+                  <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+                )}
               </div>
               <div className="sm:col-span-2">
-                <label className="text-sm font-medium block mb-1">Email</label>
+                <label className="text-sm font-medium block mb-1">
+                  Email{" "}
+                  <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
                 <input
                   name="email"
                   type="email"
@@ -131,6 +153,9 @@ export default function Checkout() {
                   onChange={handleChange}
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:border-red-900"
                 />
+                {errors.email && (
+                  <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
             </div>
           </div>
@@ -144,26 +169,32 @@ export default function Checkout() {
                   Neighborhood
                 </label>
                 <input
-                  required
                   name="neighborhood"
                   value={formData.neighborhood}
                   onChange={handleChange}
                   placeholder="e.g. Bole, Kazanchis"
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:border-red-900"
                 />
+                {errors.neighborhood && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.neighborhood}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium block mb-1">
                   Full Address / Landmark
                 </label>
                 <textarea
-                  required
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
                   rows={3}
                   className="w-full border rounded-lg px-3 py-2 outline-none focus:border-red-900"
                 />
+                {errors.address && (
+                  <p className="text-red-600 text-sm mt-1">{errors.address}</p>
+                )}
               </div>
             </div>
           </div>
@@ -233,7 +264,6 @@ export default function Checkout() {
             </span>
           </div>
 
-          {/* THIS is the submit button */}
           <button
             type="submit"
             className="w-full bg-red-900 hover:bg-red-800 text-white font-semibold px-5 py-3 rounded-lg"
