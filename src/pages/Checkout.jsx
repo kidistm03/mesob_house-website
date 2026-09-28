@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 const paymentOptions = [
   {
@@ -21,7 +21,10 @@ const paymentOptions = [
 ];
 
 export default function Checkout() {
-  const { cartItems, subtotal, clearCart } = useCart();
+  const cartItems = useCartStore((state) => state.cartItems);
+  const subtotal = useCartStore((state) => state.subtotal());
+  const clearCart =useCartStore((state) => state.clearCart);
+  
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

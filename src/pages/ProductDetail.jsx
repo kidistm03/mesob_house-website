@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import menuJson from "../data/menu.json";
-import { useCart } from "../context/CartContext.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 const dishes = menuJson.data;
 
@@ -29,8 +29,8 @@ const heatLevels = ["Mild", "Traditional (Recommended)", "Fiery Awaze"];
 export default function ProductDetail() {
   const { slug } = useParams();
   const dish = getDishBySlug(slug);
-  const { addToCart } = useCart();
-
+  const addToCart = useCartStore((state) => state.addToCart);
+  
   const [selectedHeat, setSelectedHeat] = useState(heatLevels[1]);
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -109,11 +109,10 @@ export default function ProductDetail() {
                   key={level}
                   type="button"
                   onClick={() => setSelectedHeat(level)}
-                  className={`text-sm px-3 py-2 rounded-lg border ${
-                    selectedHeat === level
+                  className={`text-sm px-3 py-2 rounded-lg border ${selectedHeat === level
                       ? "bg-maroon text-white border-maroon"
                       : "bg-white border-gold-light/50"
-                  }`}
+                    }`}
                 >
                   {level}
                 </button>

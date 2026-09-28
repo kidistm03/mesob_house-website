@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 const DELIVERY_FEE = 0;
 const TAX_RATE = 0.15;
@@ -20,9 +20,13 @@ const defaultImage =
   "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80";
 
 export default function Cart() {
-  const { cartItems, updateQuantity, removeFromCart, subtotal, clearCart } =
-    useCart();
 
+  const cartItems = useCartStore((state) => state.cartItems);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const subtotal = useCartStore((state) => state.subtotal());
+  const clearCart = useCartStore((state) => state.clearCart);
+  
   const tax = Math.round(subtotal * TAX_RATE);
   const grandTotal = subtotal + DELIVERY_FEE + tax;
 

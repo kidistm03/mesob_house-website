@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 const categoryImages = {
   "Traditional Stews & Wat":
@@ -18,8 +18,8 @@ const defaultImage =
   "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80";
 
 export default function DishCard({ dish }) {
-  const { addToCart } = useCart();
-
+  const addToCart = useCartStore((state) => state.addToCart);
+  
   const image = dish.image || categoryImages[dish.category] || defaultImage;
   const tag = dish.isSpecial ? "Chef's Special" : dish.category;
 

@@ -1,8 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
-import { useCart } from "../context/CartContext.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 export default function Header() {
-  const { totalItems, subtotal } = useCart();
+  
+  const totalItems =useCartStore((state) => state.totalItems());
+  const subtotal = useCartStore((state) => state.subtotal());
 
   const navLinkClasses = ({ isActive }) =>
     `px-3 py-2 rounded-md text-sm font-medium ${
