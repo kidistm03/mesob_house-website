@@ -4,21 +4,6 @@ import { useCartStore } from "../store/cartStore.js";
 const DELIVERY_FEE = 0;
 const TAX_RATE = 0.15;
 
-const categoryImages = {
-  "Traditional Stews & Wat":
-    "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80",
-  "Tibs & Grills":
-    "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80",
-  "Raw & Cured Delicacies / Kitfo":
-    "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80",
-  "Fasting & Vegan / Tsom":
-    "https://images.unsplash.com/photo-1645177628172-a94c1f96e6db?w=800&q=80",
-  "Beverages & Tej":
-    "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=800&q=80",
-};
-const defaultImage =
-  "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80";
-
 export default function Cart() {
 
   const cartItems = useCartStore((state) => state.cartItems);

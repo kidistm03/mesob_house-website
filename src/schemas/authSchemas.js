@@ -46,7 +46,7 @@ export const checkoutSchema = z.object({
       "Enter a valid email"
     ),
   neighborhood: z.string().min(2, "Neighborhood is required"),
-  address: z.string().min(5, "Full address is required"),
+  address: z.string().min(2, "Full address is required"),
 });
 
 // Turn Zod issues into { fieldName: "message" }

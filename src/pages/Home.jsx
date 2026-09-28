@@ -91,7 +91,7 @@ export default function Home() {
 
         <div className="relative">
           <img
-            src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=900&q=80"
+            src="src/assets/dishes/food.jpg"
             alt="Ethiopian feast platter"
             className="w-full h-80 object-cover rounded-xl"
           />
