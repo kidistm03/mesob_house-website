@@ -3,7 +3,7 @@ import { useCartStore } from "../store/cartStore.js";
 
 export default function Header() {
   
-  const totalItems =useCartStore((state) => state.totalItems());
+  const totalItems = useCartStore((state) => state.totalItems());
   const subtotal = useCartStore((state) => state.subtotal());
 
   const navLinkClasses = ({ isActive }) =>
